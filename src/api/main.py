@@ -4,9 +4,10 @@ from transformers import pipeline
 import logging
 import os
 import time # time pour mesurer les latences
+from typing import List # Import List for type hinting
 
 # Prometheus metrics types
-from prometheus_client import Counter, Histogram, generate_latest, CollectorRegistry
+from prometheus_client import Counter, Histogram, generate_latest, CollectorRegistry, Gauge # Import Gauge
 
 # logging
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="News Classifier API",
     description="API for classifying news articles into categories using a Hugging Face model.",
-    version="1.1.0"
+    version="1.5.0"
 )
 
 # --- Définition des metrics ---
@@ -45,6 +46,14 @@ predictions_by_category = Counter(
     registry=registry
 )
 
+# Nouvelle métrique : Gauge pour l'accuracy du modèle
+model_accuracy_score = Gauge(
+    'model_accuracy_score',
+    'Current accuracy of the News Classifier model',
+    registry=registry
+)
+
+# Load Classifier model
 try:
     classifier = pipeline("text-classification", model="dima806/news-category-classifier-distilbert")
     logger.info("Hugging Face model loaded successfully: dima806/news-category-classifier-distilbert")
@@ -58,6 +67,11 @@ class ArticleInput(BaseModel):
 class PredictionOutput(BaseModel):
     category: str
     score: float
+
+# Modèle de données pour l'évaluation
+class EvaluationItem(BaseModel):
+    text: str
+    true_label: str
 
 @app.get("/")
 async def read_root():
@@ -106,6 +120,42 @@ async def predict(article: ArticleInput):
         duration = end_time - start_time
         api_request_duration_seconds.labels(endpoint="/predict", method="POST", status_code=status_code).observe(duration)
         api_requests_total.labels(endpoint="/predict", method="POST", status_code=status_code).inc()
+
+# Endpoint pour évaluer le modèle
+@app.post("/evaluate")
+async def evaluate_model(items: List[EvaluationItem]):
+    """
+    Evaluates the model on a given list of items with true labels.
+    Updates the model_accuracy_score metric.
+    """
+    start_time = time.time()
+
+    if not items:
+        raise HTTPException(status_code=400, detail="No items provided for evaluation.")
+
+    correct_predictions = 0
+    total_predictions = len(items)
+
+    for item in items:
+        try:
+            prediction = classifier(item.text)[0]['label']
+            if prediction.lower() == item.true_label.lower(): # Normaliser la casse pour la comparaison
+                correct_predictions += 1
+        except Exception as e:
+            logger.error(f"Error during evaluation for text: {item.text[:50]}... Error: {e}")
+
+    accuracy = correct_predictions / total_predictions if total_predictions > 0 else 0
+
+    # Mettre à jour la métrique Prometheus Gauge
+    model_accuracy_score.set(accuracy)
+    logger.info(f"Model evaluated. Accuracy: {accuracy:.4f} on {total_predictions} items.")
+
+    # Incrémenter les métriques d'API pour l'endpoint /evaluate
+    api_requests_total.labels(endpoint="/evaluate", method="POST", status_code="200").inc()
+    api_request_duration_seconds.labels(endpoint="/evaluate", method="POST", status_code="200").observe(time.time() - start_time)
+
+
+    return {"message": "Model evaluation completed", "accuracy": accuracy, "evaluated_items": total_predictions}
 
 @app.get("/metrics")
 async def metrics(request: Request):
