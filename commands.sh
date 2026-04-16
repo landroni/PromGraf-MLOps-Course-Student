@@ -197,4 +197,20 @@ docker-compose ps
 # sum by(endpoint, status_code) (api_requests_total{status_code!="200"})
 
 
+##Monitoring de l'Infrastructure
+# Lancer le service `node-exporter` avec la commande 
+docker-compose up -d --build node-exporter
+#relancer le service `prometheus`
+docker-compose up -d --build prometheus
+docker-compose ps
+docker-compose down
+docker-compose up -d --build
+
+##system usage
+# L'utilisation du CPU (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]) *100) pour l'inactivité, ou 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])* 100)) pour l'utilisation).
+# L'utilisation de la mémoire ((node_memory_MemTotal_bytes - node_memory_MemFree_bytes) / node_memory_MemTotal_bytes * 100 pour un pourcentage).
+# L'espace disque utilisé (100 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"} * 100)).
+
+# FIXME Définissez des alertes simples sur ces métriques (ex: alerte si CPU > 90% pendant 5 minutes ou RAM > 80%).
+
 
