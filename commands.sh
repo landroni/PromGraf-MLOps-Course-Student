@@ -2,6 +2,10 @@
 cd monitoring/PromGraf-MLOps-Course-Student/
 source .venv_monitoring/bin/activate 
 
+##forward ports
+# http://localhost:9090
+# http://localhost:8080
+# http://localhost:3000
 
 ##test api
 curl -X 'POST' \
@@ -25,6 +29,15 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
+    "text": "Bill Gates smokes."
+  }'
+
+##gen error
+curl -X 'POST' \
+  'http://localhost:8080/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
     "text": 2
   }'
 
@@ -36,8 +49,46 @@ curl -X 'POST' \
     "asdf": "The sun is a liquid."
   }'
 
-##FIXME use cron to fire requests on a cadence
+##http error
+curl -X 'POST' \
+  'http://localhost:8080/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "text": ""
+  }'
 
+##evaluate model
+curl -X 'POST' \
+  -i 'http://localhost:8080/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '[{
+    "text": "The sun is a liquid.", 
+    "true_label": "SCIENCE"
+  }]'
+
+curl -X 'POST' \
+  -i 'http://localhost:8080/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '[{
+    "text": "Brad Pitt goes home.", 
+    "true_label": "Entertainment"
+  }]'
+
+##wrong
+curl -X 'POST' \
+  -i 'http://localhost:8080/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '[{
+    "text": "The sun is a liquid.", 
+    "true_label": "SPORTS"
+  }]'
+
+
+##FIXME use cron to fire requests on a cadence
 
 ##pour lancer le nouveau service Prometheus.
 ##NOTE: if modifying 'evaluation', need to power down first (docker-compose down) and then build again
@@ -125,16 +176,25 @@ make evaluation
 docker-compose ps
 
 
+###################
 ##PromQL panels for dashboard
 # Model Accuracy
 # model_accuracy_score
 # "Prediction Distribution by Category".
 # sum (predictions_by_category_total) by (category)
 
+# model_precision_score_by_category
+# model_recall_score_by_category
+# model_f1_score_by_category
+# input_text_length_histogram 
+# prediction_confidence_score_histogram 
 
-
-
-
+# Taux de requêtes par endpoint (
+# sum by (endpoint) (rate(api_requests_total[30m]))
+# Latence P95 par endpoint (
+# histogram_quantile(0.95, sum(rate(api_request_duration_seconds_bucket[5m])) by (endpoint, le))
+# Taux d'erreur par endpoint et code HTTP (ex: 4xx, 5xx) 
+# sum by(endpoint, status_code) (api_requests_total{status_code!="200"})
 
 
 

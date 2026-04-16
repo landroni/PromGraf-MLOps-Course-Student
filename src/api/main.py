@@ -4,10 +4,13 @@ from transformers import pipeline
 import logging
 import os
 import time # time pour mesurer les latences
+import numpy as np
 from typing import List # Import List for type hinting
 
 # Prometheus metrics types
 from prometheus_client import Counter, Histogram, generate_latest, CollectorRegistry, Gauge # Import Gauge
+
+from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 
 # logging
 logging.basicConfig(level=logging.INFO)
@@ -16,12 +19,13 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="News Classifier API",
     description="API for classifying news articles into categories using a Hugging Face model.",
-    version="1.5.0"
+    version="2.0.0"
 )
 
 # --- Définition des metrics ---
 registry = CollectorRegistry()
 
+##instantiate prometheus metrics
 # Counter 'api_requests_total', label par endpoint, method, et status code
 api_requests_total = Counter(
     'api_requests_total',
@@ -53,6 +57,42 @@ model_accuracy_score = Gauge(
     registry=registry
 )
 
+# Nouvelles métriques : Gauges pour Precision, Recall, F1-score par catégorie
+model_precision_score = Gauge(
+    'model_precision_score',
+    'Precision score of the News Classifier model by category',
+    ['category'],
+    registry=registry
+)
+
+model_recall_score = Gauge(
+    'model_recall_score',
+    'Recall score of the News Classifier model by category',
+    ['category'], # Avec un label pour la catégorie
+    registry=registry
+)
+
+model_f1_score = Gauge(
+    'model_f1_score',
+    'F1 score of the News Classifier model by category',
+    ['category'], # Avec un label pour la catégorie
+    registry=registry
+)
+
+# Nouvel Histogramme pour la longueur des textes d'entrée
+input_text_length_histogram = Histogram(
+    'input_text_length_chars',
+    'Length of input text in characters',
+    registry=registry
+)
+
+# Nouvel Histogramme pour le score de confiance des prédictions
+prediction_confidence_score_histogram = Histogram(
+    'prediction_confidence_score',
+    'Confidence score of model predictions',
+    registry=registry
+)
+
 # Load Classifier model
 try:
     classifier = pipeline("text-classification", model="dima806/news-category-classifier-distilbert")
@@ -61,6 +101,8 @@ except Exception as e:
     logger.error(f"Error loading Hugging Face model: {e}")
     raise RuntimeError("Failed to load ML model, application cannot start.") from e
 
+
+##define classes
 class ArticleInput(BaseModel):
     text: str
 
@@ -73,6 +115,8 @@ class EvaluationItem(BaseModel):
     text: str
     true_label: str
 
+
+##set up endpoints
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the News Classifier API. Use /predict to classify articles."}
@@ -88,10 +132,14 @@ async def predict(article: ArticleInput):
 
     try:
         if not article.text:
+            ##use this to trigger HTTP errors
             logger.warning("Received empty text for prediction.")
             status_code = "400"
             raise HTTPException(status_code=400, detail="Input text cannot be empty.")
 
+        # Observer la longueur du texte d'entrée
+        input_text_length_histogram.observe(len(article.text))
+        
         results = classifier(article.text)
         if not results:
             logger.error(f"Classifier returned empty results for text: {article.text[:50]}...")
@@ -103,6 +151,9 @@ async def predict(article: ArticleInput):
 
         # Incrementation du counter pour la catégorie prédite
         predictions_by_category.labels(category=predicted_category).inc()
+        
+        # Observer le score de confiance
+        prediction_confidence_score_histogram.observe(confidence_score)
 
         logger.info(f"Classified text: '{article.text[:50]}...' into category: '{predicted_category}' with score: {confidence_score:.4f}")
         return PredictionOutput(category=predicted_category, score=confidence_score)
@@ -129,33 +180,63 @@ async def evaluate_model(items: List[EvaluationItem]):
     Updates the model_accuracy_score metric.
     """
     start_time = time.time()
+    status_code = "200"
 
-    if not items:
-        raise HTTPException(status_code=400, detail="No items provided for evaluation.")
+    try:
+        if not items:
+            status_code = "400"
+            raise HTTPException(status_code=400, detail="No items provided for evaluation.")
 
-    correct_predictions = 0
-    total_predictions = len(items)
+        true_labels = []
+        predicted_labels = []
+        total_predictions = len(items)
 
-    for item in items:
-        try:
-            prediction = classifier(item.text)[0]['label']
-            if prediction.lower() == item.true_label.lower(): # Normaliser la casse pour la comparaison
-                correct_predictions += 1
-        except Exception as e:
-            logger.error(f"Error during evaluation for text: {item.text[:50]}... Error: {e}")
+        # Récupérer toutes les catégories uniques pour les métriques par catégorie
+        all_categories = sorted(list(set([item.true_label.lower() for item in items] + [val.lower() for val in getattr(classifier, 'model').config.id2label.values()])))
 
-    accuracy = correct_predictions / total_predictions if total_predictions > 0 else 0
+        for item in items:
+            try:
+                prediction_result = classifier(item.text)
+                predicted_label = prediction_result[0]['label']
+                true_labels.append(item.true_label.lower())
+                predicted_labels.append(predicted_label.lower())
 
-    # Mettre à jour la métrique Prometheus Gauge
-    model_accuracy_score.set(accuracy)
-    logger.info(f"Model evaluated. Accuracy: {accuracy:.4f} on {total_predictions} items.")
+            except Exception as e:
+                logger.error(f"Error during single item evaluation for text: {item.text[:50]}... Error: {e}")
+                total_predictions -= 1
 
-    # Incrémenter les métriques d'API pour l'endpoint /evaluate
-    api_requests_total.labels(endpoint="/evaluate", method="POST", status_code="200").inc()
-    api_request_duration_seconds.labels(endpoint="/evaluate", method="POST", status_code="200").observe(time.time() - start_time)
+        if not true_labels: 
+            raise HTTPException(status_code=500, detail="No successful predictions during evaluation.")
 
+        # Calcul de l'Accuracy globale
+        accuracy = accuracy_score(true_labels, predicted_labels)
+        model_accuracy_score.set(accuracy)
 
-    return {"message": "Model evaluation completed", "accuracy": accuracy, "evaluated_items": total_predictions}
+        # Calcul de Precision, Recall, F1-score par catégorie
+        p, r, f1, _ = precision_recall_fscore_support(true_labels, predicted_labels, labels=all_categories, average=None, zero_division=0)
+
+        for i, category in enumerate(all_categories):
+            model_precision_score.labels(category=category).set(p[i])
+            model_recall_score.labels(category=category).set(r[i])
+            model_f1_score.labels(category=category).set(f1[i])
+
+        logger.info(f"Model evaluated. Accuracy: {accuracy:.4f} on {total_predictions} items. Per-category scores updated.")
+        return {"message": "Model evaluation completed", "accuracy": accuracy, "evaluated_items": total_predictions}
+
+    except HTTPException as e:
+        status_code = str(e.status_code)
+        raise
+    except Exception as e:
+        logger.error(f"Error during evaluation of model: {e}")
+        status_code = "500"
+        raise HTTPException(status_code=500, detail=f"Model evaluation failed due to an internal error: {e}")
+    finally:
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Incrémenter les métriques d'API pour l'endpoint /evaluate
+        api_request_duration_seconds.labels(endpoint="/evaluate", method="POST", status_code=status_code).observe(duration)
+        api_requests_total.labels(endpoint="/evaluate", method="POST", status_code=status_code).inc()
 
 @app.get("/metrics")
 async def metrics(request: Request):

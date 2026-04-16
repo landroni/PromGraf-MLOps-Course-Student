@@ -1,0 +1,255 @@
+# HELP api_requests_total Total number of API requests
+# TYPE api_requests_total counter
+api_requests_total{endpoint="/predict",method="POST",status_code="200"} 2.0
+api_requests_total{endpoint="/evaluate",method="POST",status_code="200"} 5.0
+api_requests_total{endpoint="/predict",method="POST",status_code="400"} 2.0
+# HELP api_requests_created Total number of API requests
+# TYPE api_requests_created gauge
+api_requests_created{endpoint="/predict",method="POST",status_code="200"} 1.7763448975514214e+09
+api_requests_created{endpoint="/evaluate",method="POST",status_code="200"} 1.776345052521361e+09
+api_requests_created{endpoint="/predict",method="POST",status_code="400"} 1.776345410596003e+09
+# HELP api_request_duration_seconds API request duration in seconds
+# TYPE api_request_duration_seconds histogram
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.005",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.01",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.025",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.05",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.075",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.1",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.25",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.5",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.75",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="1.0",method="POST",status_code="200"} 1.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="2.5",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="5.0",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="7.5",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="10.0",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="+Inf",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_count{endpoint="/predict",method="POST",status_code="200"} 2.0
+api_request_duration_seconds_sum{endpoint="/predict",method="POST",status_code="200"} 1.158841848373413
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.005",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.01",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.025",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.05",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.075",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.1",method="POST",status_code="200"} 0.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.25",method="POST",status_code="200"} 4.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.5",method="POST",status_code="200"} 4.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="0.75",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="1.0",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="2.5",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="5.0",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="7.5",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="10.0",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_bucket{endpoint="/evaluate",le="+Inf",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_count{endpoint="/evaluate",method="POST",status_code="200"} 5.0
+api_request_duration_seconds_sum{endpoint="/evaluate",method="POST",status_code="200"} 1.207402229309082
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.005",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.01",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.025",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.05",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.075",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.1",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.25",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.5",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="0.75",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="1.0",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="2.5",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="5.0",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="7.5",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="10.0",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_bucket{endpoint="/predict",le="+Inf",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_count{endpoint="/predict",method="POST",status_code="400"} 2.0
+api_request_duration_seconds_sum{endpoint="/predict",method="POST",status_code="400"} 0.0002894401550292969
+# HELP api_request_duration_seconds_created API request duration in seconds
+# TYPE api_request_duration_seconds_created gauge
+api_request_duration_seconds_created{endpoint="/predict",method="POST",status_code="200"} 1.77634489755132e+09
+api_request_duration_seconds_created{endpoint="/evaluate",method="POST",status_code="200"} 1.7763450525212364e+09
+api_request_duration_seconds_created{endpoint="/predict",method="POST",status_code="400"} 1.7763454105959003e+09
+# HELP predictions_by_category_total Number of predictions by category
+# TYPE predictions_by_category_total counter
+predictions_by_category_total{category="POLITICS"} 1.0
+predictions_by_category_total{category="COMEDY"} 1.0
+# HELP predictions_by_category_created Number of predictions by category
+# TYPE predictions_by_category_created gauge
+predictions_by_category_created{category="POLITICS"} 1.776344897551055e+09
+predictions_by_category_created{category="COMEDY"} 1.7763454192037601e+09
+# HELP model_accuracy_score Current accuracy of the News Classifier model
+# TYPE model_accuracy_score gauge
+model_accuracy_score 1.0
+# HELP model_precision_score Precision score of the News Classifier model by category
+# TYPE model_precision_score gauge
+model_precision_score{category="arts"} 0.0
+model_precision_score{category="arts & culture"} 0.0
+model_precision_score{category="black voices"} 0.0
+model_precision_score{category="business"} 0.0
+model_precision_score{category="college"} 0.0
+model_precision_score{category="comedy"} 0.0
+model_precision_score{category="crime"} 0.0
+model_precision_score{category="culture & arts"} 0.0
+model_precision_score{category="divorce"} 0.0
+model_precision_score{category="education"} 0.0
+model_precision_score{category="entertainment"} 0.0
+model_precision_score{category="environment"} 0.0
+model_precision_score{category="fifty"} 0.0
+model_precision_score{category="food & drink"} 0.0
+model_precision_score{category="good news"} 0.0
+model_precision_score{category="green"} 0.0
+model_precision_score{category="healthy living"} 0.0
+model_precision_score{category="home & living"} 0.0
+model_precision_score{category="impact"} 0.0
+model_precision_score{category="latino voices"} 0.0
+model_precision_score{category="media"} 0.0
+model_precision_score{category="money"} 0.0
+model_precision_score{category="parenting"} 0.0
+model_precision_score{category="parents"} 0.0
+model_precision_score{category="politics"} 0.0
+model_precision_score{category="queer voices"} 0.0
+model_precision_score{category="religion"} 0.0
+model_precision_score{category="science"} 1.0
+model_precision_score{category="sports"} 0.0
+model_precision_score{category="style"} 0.0
+model_precision_score{category="style & beauty"} 0.0
+model_precision_score{category="taste"} 0.0
+model_precision_score{category="tech"} 0.0
+model_precision_score{category="the worldpost"} 0.0
+model_precision_score{category="travel"} 0.0
+model_precision_score{category="u.s. news"} 0.0
+model_precision_score{category="weddings"} 0.0
+model_precision_score{category="weird news"} 0.0
+model_precision_score{category="wellness"} 0.0
+model_precision_score{category="women"} 0.0
+model_precision_score{category="world news"} 0.0
+model_precision_score{category="worldpost"} 0.0
+# HELP model_recall_score Recall score of the News Classifier model by category
+# TYPE model_recall_score gauge
+model_recall_score{category="arts"} 0.0
+model_recall_score{category="arts & culture"} 0.0
+model_recall_score{category="black voices"} 0.0
+model_recall_score{category="business"} 0.0
+model_recall_score{category="college"} 0.0
+model_recall_score{category="comedy"} 0.0
+model_recall_score{category="crime"} 0.0
+model_recall_score{category="culture & arts"} 0.0
+model_recall_score{category="divorce"} 0.0
+model_recall_score{category="education"} 0.0
+model_recall_score{category="entertainment"} 0.0
+model_recall_score{category="environment"} 0.0
+model_recall_score{category="fifty"} 0.0
+model_recall_score{category="food & drink"} 0.0
+model_recall_score{category="good news"} 0.0
+model_recall_score{category="green"} 0.0
+model_recall_score{category="healthy living"} 0.0
+model_recall_score{category="home & living"} 0.0
+model_recall_score{category="impact"} 0.0
+model_recall_score{category="latino voices"} 0.0
+model_recall_score{category="media"} 0.0
+model_recall_score{category="money"} 0.0
+model_recall_score{category="parenting"} 0.0
+model_recall_score{category="parents"} 0.0
+model_recall_score{category="politics"} 0.0
+model_recall_score{category="queer voices"} 0.0
+model_recall_score{category="religion"} 0.0
+model_recall_score{category="science"} 1.0
+model_recall_score{category="sports"} 0.0
+model_recall_score{category="style"} 0.0
+model_recall_score{category="style & beauty"} 0.0
+model_recall_score{category="taste"} 0.0
+model_recall_score{category="tech"} 0.0
+model_recall_score{category="the worldpost"} 0.0
+model_recall_score{category="travel"} 0.0
+model_recall_score{category="u.s. news"} 0.0
+model_recall_score{category="weddings"} 0.0
+model_recall_score{category="weird news"} 0.0
+model_recall_score{category="wellness"} 0.0
+model_recall_score{category="women"} 0.0
+model_recall_score{category="world news"} 0.0
+model_recall_score{category="worldpost"} 0.0
+# HELP model_f1_score F1 score of the News Classifier model by category
+# TYPE model_f1_score gauge
+model_f1_score{category="arts"} 0.0
+model_f1_score{category="arts & culture"} 0.0
+model_f1_score{category="black voices"} 0.0
+model_f1_score{category="business"} 0.0
+model_f1_score{category="college"} 0.0
+model_f1_score{category="comedy"} 0.0
+model_f1_score{category="crime"} 0.0
+model_f1_score{category="culture & arts"} 0.0
+model_f1_score{category="divorce"} 0.0
+model_f1_score{category="education"} 0.0
+model_f1_score{category="entertainment"} 0.0
+model_f1_score{category="environment"} 0.0
+model_f1_score{category="fifty"} 0.0
+model_f1_score{category="food & drink"} 0.0
+model_f1_score{category="good news"} 0.0
+model_f1_score{category="green"} 0.0
+model_f1_score{category="healthy living"} 0.0
+model_f1_score{category="home & living"} 0.0
+model_f1_score{category="impact"} 0.0
+model_f1_score{category="latino voices"} 0.0
+model_f1_score{category="media"} 0.0
+model_f1_score{category="money"} 0.0
+model_f1_score{category="parenting"} 0.0
+model_f1_score{category="parents"} 0.0
+model_f1_score{category="politics"} 0.0
+model_f1_score{category="queer voices"} 0.0
+model_f1_score{category="religion"} 0.0
+model_f1_score{category="science"} 1.0
+model_f1_score{category="sports"} 0.0
+model_f1_score{category="style"} 0.0
+model_f1_score{category="style & beauty"} 0.0
+model_f1_score{category="taste"} 0.0
+model_f1_score{category="tech"} 0.0
+model_f1_score{category="the worldpost"} 0.0
+model_f1_score{category="travel"} 0.0
+model_f1_score{category="u.s. news"} 0.0
+model_f1_score{category="weddings"} 0.0
+model_f1_score{category="weird news"} 0.0
+model_f1_score{category="wellness"} 0.0
+model_f1_score{category="women"} 0.0
+model_f1_score{category="world news"} 0.0
+model_f1_score{category="worldpost"} 0.0
+# HELP input_text_length_chars Length of input text in characters
+# TYPE input_text_length_chars histogram
+input_text_length_chars_bucket{le="0.005"} 0.0
+input_text_length_chars_bucket{le="0.01"} 0.0
+input_text_length_chars_bucket{le="0.025"} 0.0
+input_text_length_chars_bucket{le="0.05"} 0.0
+input_text_length_chars_bucket{le="0.075"} 0.0
+input_text_length_chars_bucket{le="0.1"} 0.0
+input_text_length_chars_bucket{le="0.25"} 0.0
+input_text_length_chars_bucket{le="0.5"} 0.0
+input_text_length_chars_bucket{le="0.75"} 0.0
+input_text_length_chars_bucket{le="1.0"} 1.0
+input_text_length_chars_bucket{le="2.5"} 1.0
+input_text_length_chars_bucket{le="5.0"} 1.0
+input_text_length_chars_bucket{le="7.5"} 1.0
+input_text_length_chars_bucket{le="10.0"} 1.0
+input_text_length_chars_bucket{le="+Inf"} 2.0
+input_text_length_chars_count 2.0
+input_text_length_chars_sum 19.0
+# HELP input_text_length_chars_created Length of input text in characters
+# TYPE input_text_length_chars_created gauge
+input_text_length_chars_created 1.776344864397746e+09
+# HELP prediction_confidence_score Confidence score of model predictions
+# TYPE prediction_confidence_score histogram
+prediction_confidence_score_bucket{le="0.005"} 0.0
+prediction_confidence_score_bucket{le="0.01"} 0.0
+prediction_confidence_score_bucket{le="0.025"} 0.0
+prediction_confidence_score_bucket{le="0.05"} 0.0
+prediction_confidence_score_bucket{le="0.075"} 0.0
+prediction_confidence_score_bucket{le="0.1"} 0.0
+prediction_confidence_score_bucket{le="0.25"} 0.0
+prediction_confidence_score_bucket{le="0.5"} 1.0
+prediction_confidence_score_bucket{le="0.75"} 2.0
+prediction_confidence_score_bucket{le="1.0"} 2.0
+prediction_confidence_score_bucket{le="2.5"} 2.0
+prediction_confidence_score_bucket{le="5.0"} 2.0
+prediction_confidence_score_bucket{le="7.5"} 2.0
+prediction_confidence_score_bucket{le="10.0"} 2.0
+prediction_confidence_score_bucket{le="+Inf"} 2.0
+prediction_confidence_score_count 2.0
+prediction_confidence_score_sum 0.7737376987934113
+# HELP prediction_confidence_score_created Confidence score of model predictions
+# TYPE prediction_confidence_score_created gauge
+prediction_confidence_score_created 1.7763448643978252e+09
