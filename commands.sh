@@ -73,8 +73,16 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '[{
+    "text": "The sun is a liquid.", 
+    "true_label": "SCIENCE"
+  }, 
+  {
     "text": "Brad Pitt goes home.", 
     "true_label": "Entertainment"
+  }, 
+  {
+    "text": "The sun is a liquid.", 
+    "true_label": "SPORTS"
   }]'
 
 ##wrong
